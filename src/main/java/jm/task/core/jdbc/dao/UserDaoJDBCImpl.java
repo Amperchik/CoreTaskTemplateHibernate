@@ -11,13 +11,13 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
     //Шаблоны SQL запросов на создание\удаление\отчистки\добавление юзера\удаление юзера\получение таблицы.
-    private static final String createTable = "Create table  if NOT EXISTS UserDB (id BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL " +
+    private  String createTable = "Create table  if NOT EXISTS UserDB (id BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL " +
             ", nam varchar(256) NOT NULL ,lastName varchar(256) not null, age int not null);";
-    private static final String dropTable = "DROP table  if  EXISTS UserDB;";
-    private static final String cleanTable = "TRUNCATE TABLE userDB;";
-    private static final String addUser ="INSERT INTO UserDB(nam,lastName,age) VALUES (?,?,?)";
-    private static final String deleteUser = "DELETE FROM userDB WHERE id=?";
-    private static final String getAllUsers = "SELECT * FROM userDB;";
+    private  String dropTable = "DROP table  if  EXISTS UserDB;";
+    private  String cleanTable = "TRUNCATE TABLE userDB;";
+    private  String addUser ="INSERT INTO UserDB(nam,lastName,age) VALUES (?,?,?)";
+    private  String deleteUser = "DELETE FROM userDB WHERE id=?";
+    private  String getAllUsers = "SELECT * FROM userDB;";
 
     public UserDaoJDBCImpl() {
 
@@ -25,7 +25,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void createUsersTable() {
         try (Connection create = Util.getConnectionBD();
-             PreparedStatement queryCreate = create.prepareStatement(UserDaoJDBCImpl.createTable)) {
+             PreparedStatement queryCreate = create.prepareStatement(this.createTable)) {
             queryCreate.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -34,7 +34,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
         try (Connection create = Util.getConnectionBD();
-             PreparedStatement queryDrop = create.prepareStatement(UserDaoJDBCImpl.dropTable)) {
+             PreparedStatement queryDrop = create.prepareStatement(this.dropTable)) {
             queryDrop.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -44,7 +44,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
         try (Connection create = Util.getConnectionBD();
-             PreparedStatement queryDrop = create.prepareStatement(UserDaoJDBCImpl.addUser)) {
+             PreparedStatement queryDrop = create.prepareStatement(this.addUser)) {
             queryDrop.setByte(3,age);
             queryDrop.setString(1,name);
             queryDrop.setString(2,lastName);
@@ -56,7 +56,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void removeUserById(long id) {
         try (Connection create = Util.getConnectionBD();
-             PreparedStatement queryDrop = create.prepareStatement(UserDaoJDBCImpl.deleteUser)) {
+             PreparedStatement queryDrop = create.prepareStatement(this.deleteUser)) {
             queryDrop.setLong(1,id);
             queryDrop.executeUpdate();
         } catch (SQLException throwables) {
@@ -68,7 +68,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User>table=new ArrayList<>();
         try (Connection create = Util.getConnectionBD();
-             PreparedStatement queryDrop = create.prepareStatement(UserDaoJDBCImpl.getAllUsers)) {
+             PreparedStatement queryDrop = create.prepareStatement(this.getAllUsers)) {
            ResultSet otvet=queryDrop.executeQuery();
            while(otvet.next()){
                Long id=otvet.getLong(1);
@@ -88,7 +88,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() {
         try (Connection create = Util.getConnectionBD();
-             PreparedStatement queryDrop = create.prepareStatement(UserDaoJDBCImpl.cleanTable)) {
+             PreparedStatement queryDrop = create.prepareStatement(this.cleanTable)) {
             queryDrop.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
