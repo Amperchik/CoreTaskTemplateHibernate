@@ -6,7 +6,7 @@ import jm.task.core.jdbc.service.UserServiceImpl;
 import java.sql.SQLException;
 
 public class Main {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args)  {
         UserServiceImpl contactBD = new UserServiceImpl();
         contactBD.createUsersTable();
         User a = new User("Vasy1", "Pupkin1", (byte) 10);
