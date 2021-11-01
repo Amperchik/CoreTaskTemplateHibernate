@@ -19,12 +19,14 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
+        Session session = null;
         try {
-            Session session = Util.getSessionFactory().getCurrentSession();
+            session = Util.getSessionFactory().getCurrentSession();
             session.beginTransaction();
             session.createSQLQuery(createTable).executeUpdate();
             session.getTransaction().commit();
         } catch (HibernateException e) {
+            if (session != null) session.getTransaction().rollback();
             System.out.println("Таблица не создана");
             e.printStackTrace();
         }
@@ -32,12 +34,14 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
+        Session session = null;
         try {
-            Session session = Util.getSessionFactory().getCurrentSession();
+            session = Util.getSessionFactory().getCurrentSession();
             session.beginTransaction();
             session.createSQLQuery(dropTable).executeUpdate();
             session.getTransaction().commit();
         } catch (HibernateException e) {
+            if (session != null) session.getTransaction().rollback();
             System.out.println("Таблица не удалена");
             e.printStackTrace();
         }
@@ -45,12 +49,15 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
+        Session session = null;
         try {
-            Session session = Util.getSessionFactory().getCurrentSession();
+            session = Util.getSessionFactory().getCurrentSession();
+            System.out.println(session);
             session.beginTransaction();
             session.save(new User(name, lastName, age));
             session.getTransaction().commit();
         } catch (HibernateException e) {
+            if (session != null) session.getTransaction().rollback();
             System.out.println("Данные не сохранены");
             e.printStackTrace();
         }
@@ -58,13 +65,15 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) {
+        Session session = null;
         try {
-            Session session = Util.getSessionFactory().getCurrentSession();
+            session = Util.getSessionFactory().getCurrentSession();
             session.beginTransaction();
             User user = session.get(User.class, id);
             session.remove(user);
             session.getTransaction().commit();
         } catch (HibernateException e) {
+            session.getTransaction().rollback();
             System.out.println("Пользователь не удален");
             e.printStackTrace();
         }
@@ -73,13 +82,15 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        List<User> table=new ArrayList<>();
+        List<User> table = new ArrayList<>();
+        Session session = null;
         try {
-            Session session = Util.getSessionFactory().getCurrentSession();
+            session = Util.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            table = session.createQuery("From "+User.class.getSimpleName()).list();
+            table = session.createQuery("From " + User.class.getSimpleName()).list();
             session.getTransaction().commit();
         } catch (HibernateException e) {
+            if (session != null) session.getTransaction().rollback();
             System.out.println("Данные не получены");
             e.printStackTrace();
         }
@@ -89,12 +100,14 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
+        Session session = null;
         try {
-            Session session = Util.getSessionFactory().getCurrentSession();
+            session = Util.getSessionFactory().getCurrentSession();
             session.beginTransaction();
             session.createQuery("delete from User").executeUpdate();
             session.getTransaction().commit();
         } catch (HibernateException e) {
+            if (session != null) session.getTransaction().rollback();
             System.out.println("Таблица не очищена");
             e.printStackTrace();
         }
