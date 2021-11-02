@@ -8,10 +8,9 @@ import org.hibernate.Session;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sun.xml.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table;
+
 public class UserDaoHibernateImpl implements UserDao {
-    private String createTable = "Create table  if NOT EXISTS UserDB (id BIGINT PRIMARY KEY AUTO_INCREMENT " +
-            "NOT NULL,name varchar(256) NOT NULL ,lastName varchar(256) not null,age int not null);";
-    private String dropTable = "DROP table  if  EXISTS UserDB;";
 
     public UserDaoHibernateImpl() {
     }
@@ -23,7 +22,8 @@ public class UserDaoHibernateImpl implements UserDao {
         try {
             session = Util.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            session.createSQLQuery(createTable).executeUpdate();
+            session.createSQLQuery("Create table  if NOT EXISTS UserDB (id BIGINT PRIMARY KEY AUTO_INCREMENT " +
+                    "NOT NULL,name varchar(256) NOT NULL ,lastName varchar(256) not null,age int not null);").executeUpdate();
             session.getTransaction().commit();
         } catch (HibernateException e) {
             if (session != null) session.getTransaction().rollback();
@@ -38,7 +38,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try {
             session = Util.getSessionFactory().getCurrentSession();
             session.beginTransaction();
-            session.createSQLQuery(dropTable).executeUpdate();
+            session.createSQLQuery("DROP table  if  EXISTS UserDB;").executeUpdate();
             session.getTransaction().commit();
         } catch (HibernateException e) {
             if (session != null) session.getTransaction().rollback();
